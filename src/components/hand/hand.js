@@ -1,4 +1,4 @@
-import PlayingCard from './playing-card';
+import PlayingCard from './../playing-card/playing-card';
 import React, { Component } from 'react';
 import _ from 'lodash';
 

@@ -1,19 +1,19 @@
 import React from 'react';
 import PlayingCard from './playing-card';
 
-const Hand = props => {
+const Meld = props => {
     return (
-        <div>
+        <div style={{position: 'relative'}}>
             {props.cards.map((card, cardIndex)=>(
-                <PlayingCard suit={card.suit}
-                             rank={card.rank}
-                             imageLocation={'below'}
+                <PlayingCard card={card}
+                             imageLocation={'beside'}
                              size={.2}
-                             left={(cardIndex * 25) + 'px'}
+                             top={(cardIndex * 25) + 'px'}
+                             key={cardIndex}
                 />
             ))}
         </div>
     );
 };
 
-export default Hand;
+export default Meld;

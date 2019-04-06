@@ -4,83 +4,26 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import './playing-card.less';
 
-import PlayingCard from './../src/playing-card';
+import Hand from './../src/components/hand/hand';
 
-const card = {
-    suit: 'C',
-    rank: 'A',
-    cardId: '1',
-    value: 13,
-    selected: false
-};
-const pinned = {
-    suit: 'C',
-    rank: 'A',
-    cardId: '1',
-    value: 13,
-    selected: false,
-    pinValue: 2
-};
-const joker = {
-    suit: 'J',
-    rank: 'A',
-    cardId: '1',
-    value: 13,
-    selected: false
-};
+const cards = [
+    {suit: 'C', rank: 'A', cardId: '1', value: 13},
+    {suit: 'D', rank: '2', cardId: '2', value: 1},
+    {suit: 'H', rank: '3', cardId: '3', value: 2},
+    {suit: 'C', rank: '3', cardId: '4', value: 2},
+    {suit: 'S', rank: '4', cardId: '5', value: 3},
+    {suit: 'C', rank: '5', cardId: '6', value: 4},
+    {suit: 'D', rank: '5', cardId: '7', value: 4},
+    {suit: 'D', rank: '6', cardId: '8', value: 5},
+    {suit: 'J', cardId: '9'},
+    {suit: 'S', rank: '8', cardId: '10', value: 7},
+    {suit: 'C', rank: '9', cardId: '11', value: 8},
+    {suit: 'C', rank: '9', cardId: '12', value: 8},
+    {suit: 'C', rank: 'K', cardId: '13', value: 12},
+    {suit: 'J', cardId: '14'},
+];
 
-storiesOf('PlayingCard', module)
-  .add('not selected', () => <PlayingCard card={card}
-                                          imageLocation={'below'}
-                                          size={.2}
-                                          left={(0 * 25) + 'px'}
-                                          selected={false}
-                                          onSelect={action('selected')}
-                                          onPinned={action('pinned')}
-                                          onMoved={action('moved')}
-                            />)
-  .add('selected', () => <PlayingCard card={card}
-                                      imageLocation={'below'}
-                                      size={.2}
-                                      left={(0 * 25) + 'px'}
-                                      selected={true}
-                                      onSelect={action('selected')}
-                                      onPinned={action('pinned')}
-                                      onMoved={action('moved')}
-                            />)
-  .add('pinned', () => <PlayingCard card={pinned}
-                                    imageLocation={'below'}
-                                    size={.2}
-                                    left={(0 * 25) + 'px'}
-                                    selected={true}
-                                    onSelect={action('selected')}
-                                    onPinned={action('pinned')}
-                                    onMoved={action('moved')}
-                            />)
-  .add('joker', () => <PlayingCard card={joker}
-                                   imageLocation={'below'}
-                                   size={.2}
-                                   left={(0 * 25) + 'px'}
-                                   selected={true}
-                                   onSelect={action('selected')}
-                                   onPinned={action('pinned')}
-                                   onMoved={action('moved')}
-                            />)
-  .add('no icons', () => <PlayingCard card={card}
-                                      imageLocation={'below'}
-                                      size={.2}
-                                      left={(0 * 25) + 'px'}
-                                      selected={true}
-                                      onSelect={action('selected')}
-                                      onPinned={null}
-                                      onMoved={null}
-                            />)
-  .add('image beside', () => <PlayingCard card={card}
-                                          imageLocation={'beside'}
-                                          size={.2}
-                                          left={(0 * 25) + 'px'}
-                                          selected={true}
-                                          onSelect={action('selected')}
-                                          onPinned={action('pinned')}
-                                          onMoved={action('moved')}
-                            />);
+storiesOf('Hand', module)
+  .add('test 1', () =>
+      <Hand cards={cards}
+      />);
