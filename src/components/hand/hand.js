@@ -1,223 +1,169 @@
 import PlayingCard from './../playing-card/playing-card';
-import React, { Component } from 'react';
-import _ from 'lodash';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import Config from '../../utils/config';
+import { sortHand } from '../../utils/card-utils';
+import CardManagement from '../../utils/card-management';
 
-class Hand extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            cards: this.props.cards.map(card=>(
-                {
-                    selected: false,
-                    pinValue: 0,
-                    ...card
-                }
-            )),
-            moveState: null,
-            sortState: null,
-            pinValue: 0
-        };
-        this.selectedCard = null;
-    }
+const DivHand = styled.div`
+    height: auto;
+    width: auto;
+    display: block;
+`;
+const Sorts = styled.div`
+    width: 95px;
+    padding: 20px;
+    float: left;
+`;
+const SortButton = styled.div`
+    display: block;
+    padding: 15px;
+    border: 1px solid grey;
+`;
+const Cards = styled.div`
+    position: relative;
+    float: left;
+`;
 
-    render() {
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-xs-1">
-                        <div className="container">
-                            <div className="row">
-                                <div className={'btn col '
-                                        + (this.state.sortState === 'rank' ? 'btn-info' : 'btn-secondary')}
-                                     style={{marginTop: '10px'}}
-                                     onClick={()=>this.sortByRank()}>A-4
-                                </div>
-                            </div>
-                        </div>
-                        <div className="container">
-                            <div className="row">
-                                <div className={'btn col '
-                                + (this.state.sortState === 'suit' ? 'btn-info' : 'btn-secondary')}
-                                     style={{marginTop: '5px'}}
-                                     onClick={()=>this.sortBySuit()}>{String.fromCharCode(9824)}-{String.fromCharCode(9827)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-11" style={{position: 'relative'}}>
-                        {this.state.cards.map((card, cardIndex) => (
-                            <PlayingCard card={card}
-                                         imageLocation={'below'}
-                                         size={.2}
-                                         left={(cardIndex * 25) + 'px'}
-                                         top={card.selected ? '0' : '10px'}
-                                         onSelect={this.state.moveState ? () => this.onMoveEnd(card) : () => this.onSelect(card)}
-                                         onPinned={this.state.moveState ? null : event => this.onPinned(event, card)}
-                                         onMoved={this.state.moveState ? null : event => this.onMoveStart(event, card)}
-                                         key={cardIndex}
-                            />
-                        ))}
-                        {this.state.moveState && (
-                            <PlayingCard card={{cardText: 'Move to front of hand.'}}
-                                         imageLocation={''}
-                                         size={.2}
-                                         left={(this.state.cards.length * 25) + 'px'}
-                                         top={'10px'}
-                                         onSelect={() => this.onMoveEnd(null)}
-                                         onPinned={null}
-                                         onMoved={null}
-                                         key={this.state.cards.length}
-                            />
-                        )}
-                    </div>
-                </div>
-            </div>
-        );
-    }
+export default function HandComponent(props) {
+    const [ sortState, setSortState ] = useState('');
+    const [ moveState, setMoveState ] = useState('');
+    const [ showIcons, setShowIcons ] = useState(false);
 
-    componentWillUpdate(props) {
-        const newStateCards = [
-            ...this.state.cards
-                .filter(stateCard=>props.cards.find(propCard=>propCard.cardId === stateCard.cardId)),
-            ...props.cards.filter(propCard=>!this.state.cards.find(stateCard=>stateCard.cardId === propCard.cardId))
-                .map(card=>(
-                    {
-                        selected: false,
-                        pinValue: 0,
-                        ...card
-                    }
-                ))
-        ];
-        if (!_.isEqual(newStateCards, this.state.cards)) {
-            this.setState({
-                cards: newStateCards
-            });
+    const toggleSelect = card => {
+        CardManagement.toggleSelect(card);
+        const newShowIcons = CardManagement.countSelectedCards() === 1;
+        if (showIcons !== newShowIcons) {
+            setShowIcons(newShowIcons);
         }
     }
 
-    sortByRank() {
-        const cards = this.sortHand(this.state.cards, 'rank');
-        this.setState({
-            sortState: 'rank',
-            cards: cards
-        })
-    }
+    const SortSuit = styled(SortButton)`
+        background-color: ${sortState === 'suit' ? Config.buttonHighlight : '#fff'};
+        margin-top: 20px;
+    `;
+    const SortRank = styled(SortButton)`
+        background-color: ${sortState === 'rank' ? Config.buttonHighlight : '#fff'};
+    `;
 
-    sortBySuit() {
-        const cards = this.sortHand(this.state.cards, 'suit');
-        this.setState({
-            sortState: 'suit',
-            cards: cards
-        })
-    }
-
-    sortHand(cards, type) {
-        if (type === 'rank') {
-            return [
-                ...cards.filter(card=>card.pinValue)
-                    .sort((cardA, cardB)=>cardA.pinValue - cardB.pinValue),
-                ...cards.filter(card=>!card.pinValue && (card.suit === 'J' || card.value === 1)),
-                ...cards.filter(card=>!card.pinValue && card.suit !== 'J' && card.value > 2)
-                    .sort((cardA, cardB)=>(cardB.value - cardA.value)),
-                ...cards.filter(card=>!card.pinValue && (card.suit === 'D' || card.suit === 'H') && card.value === 2),
-                ...cards.filter(card=>!card.pinValue && (card.suit === 'C' || card.suit === 'S') && card.value === 2)
-            ];
-        }
-        if (type === 'suit') {
-            return [
-                ...cards.filter(card=>card.pinValue)
-                    .sort((cardA, cardB)=>cardA.pinValue - cardB.pinValue),
-                ...cards.filter(card=>!card.pinValue && (card.suit === 'J' || card.value === 1)),
-                ...cards.filter(card=>!card.pinValue && card.suit !== 'J' && card.value > 2)
-                    .sort((cardA, cardB)=>(
-                        cardA.suit > cardB.suit
-                            ? 1
-                            : cardA.suit < cardB.suit
-                            ? -1
-                            : cardB.value - cardA.value
-                    )),
-                ...cards.filter(card=>!card.pinValue && (card.suit === 'D' || card.suit === 'H') && card.value === 2),
-                ...cards.filter(card=>!card.pinValue && (card.suit === 'C' || card.suit === 'S') && card.value === 2)
-            ];
-        }
-        return [
-            ...cards.filter(card=>card.pinValue)
-                .sort((cardA, cardB)=>cardA.pinValue - cardB.pinValue),
-            ...cards.filter(card=>!card.pinValue)
-        ]
-    }
-
-    onSelect(updateCard) {
-        const selectedCard = this.state.cards.find(card=>card.cardId === updateCard.cardId);
-        selectedCard.selected = !selectedCard.selected;
-        this.setState({
-            cards: this.state.cards
-        });
-    }
-
-    onPinned(event, updateCard) {
-        event.stopPropagation();
-        const cards = [...this.state.cards];
-        const selectedCard = cards.find(card=>card.cardId === updateCard.cardId);
-        let pinValue = this.state.pinValue;
-        if (selectedCard.pinValue) {
-            cards.forEach(card=>card.pinValue = card.pinValue > selectedCard.pinValue ? card.pinValue - 1 : card.pinValue);
-            selectedCard.pinValue = 0;
-            pinValue -= 1;
-        } else {
-            selectedCard.pinValue = ++pinValue;
-        }
-        const sortedCards = this.sortHand(cards, this.state.sortState);
-        this.setState({
-            cards: sortedCards,
-            pinValue
-        });
-    }
-
-    onMoveStart(event, updateCard) {
-        event.stopPropagation();
-        const selectedCard = this.state.cards.find(card=>card.cardId === updateCard.cardId);
-        this.selectedCard = selectedCard;
-        selectedCard.selected = true;
-        this.setState({
-            cards: this.state.cards,
-            moveState: 'move'
-        });
-    }
-
-    onMoveEnd(updateCard) {
-        const movingCardIndex = this.state.cards.findIndex(card=>card.cardId === this.selectedCard.cardId);
-        const destinationCardIndex = updateCard
-            ? this.state.cards.findIndex(card=>card.cardId === updateCard.cardId)
-            : -1;
-        this.selectedCard.selected = false;
-        const cards = !updateCard
-            ? [
-                ...this.state.cards.slice(0, movingCardIndex),
-                ...this.state.cards.slice(movingCardIndex + 1, this.state.cards.length),
-                this.selectedCard
-            ]
-            : movingCardIndex < destinationCardIndex
-                ? [
-                    ...this.state.cards.slice(0, movingCardIndex),
-                    ...this.state.cards.slice(movingCardIndex + 1, destinationCardIndex),
-                    this.selectedCard,
-                    ...this.state.cards.slice(destinationCardIndex, this.state.cards.length)
-                ]
-                : [
-                    ...this.state.cards.slice(0, destinationCardIndex),
-                    this.selectedCard,
-                    ...this.state.cards.slice(destinationCardIndex, movingCardIndex),
-                    ...this.state.cards.slice(movingCardIndex + 1, this.state.cards.length)
-                ];
-        cards.filter(card=>card.pinValue)
-            .forEach((card, cardIndex)=>card.pinValue = cardIndex + 1);
-        this.setState({
-            cards: this.selectedCard.pinValue ? this.sortHand(cards, this.state.sortState) : cards,
-            moveState: null
-        });
-        this.selectedCard = null;
-    }
+    CardManagement.arrangeCards(props.cards);
+    const cards = sortHand(props.cards, sortState);
+    const selectable = !moveState;
+    const moveable = showIcons && !moveState;
+    return (
+        <DivHand>
+            <Sorts>
+                <SortRank
+                    onClick={sortState !== 'rank' ? () => setSortState('rank') : null}
+                >
+                    A-4
+                </SortRank>
+                <SortSuit
+                    onClick={sortState !== 'suit' ? () => setSortState('suit') : null}
+                >
+                    {String.fromCharCode(9824)}-{String.fromCharCode(9827)}
+                </SortSuit>
+            </Sorts>
+            <Cards>
+                {cards.map((card, cardIndex) => {
+                    return (
+                        <PlayingCard
+                            card={card}
+                            imageLocation={'below'}
+                            left={(cardIndex * 25) + 'px'}
+                            showIcons={showIcons}
+                            cardSelected={CardManagement.isSelected(card)}
+                            onSelect={selectable ? () => toggleSelect(card) : null}
+                            onPinned={moveable ? event => this.onPinned(event, card) : null}
+                            onMoved={moveable ? event => this.onMoveStart(event, card) : null}
+                            key={cardIndex}
+                        />
+                    );
+                })}
+                {moveState && (
+                    <PlayingCard
+                        card={{cardText: 'Move to front of hand.'}}
+                        imageLocation={''}
+                        left={(cards.length * 25) + 'px'}
+                        onSelect={() => this.onMoveEnd(null)}
+                        onPinned={null}
+                        onMoved={null}
+                        key={cards.length}
+                    />
+                )}
+            </Cards>
+        </DivHand>
+    );
 }
+//     onSelect(updateCard) {
+//         const selectedCard = this.state.cards.find(card=>card.cardId === updateCard.cardId);
+//         selectedCard.selected = !selectedCard.selected;
+//         this.setState({
+//             cards: this.state.cards
+//         });
+//     }
 
-export default Hand;
+//     onPinned(event, updateCard) {
+//         event.stopPropagation();
+//         const cards = [...this.state.cards];
+//         const selectedCard = cards.find(card=>card.cardId === updateCard.cardId);
+//         let pinValue = this.state.pinValue;
+//         if (selectedCard.pinValue) {
+//             cards.forEach(card=>card.pinValue = card.pinValue > selectedCard.pinValue ? card.pinValue - 1 : card.pinValue);
+//             selectedCard.pinValue = 0;
+//             pinValue -= 1;
+//         } else {
+//             selectedCard.pinValue = ++pinValue;
+//         }
+//         const sortedCards = this.sortHand(cards, this.state.sortState);
+//         this.setState({
+//             cards: sortedCards,
+//             pinValue
+//         });
+//     }
+
+//     onMoveStart(event, updateCard) {
+//         event.stopPropagation();
+//         const selectedCard = this.state.cards.find(card=>card.cardId === updateCard.cardId);
+//         this.selectedCard = selectedCard;
+//         selectedCard.selected = true;
+//         this.setState({
+//             cards: this.state.cards,
+//             moveState: 'move'
+//         });
+//     }
+
+//     onMoveEnd(updateCard) {
+//         const movingCardIndex = this.state.cards.findIndex(card=>card.cardId === this.selectedCard.cardId);
+//         const destinationCardIndex = updateCard
+//             ? this.state.cards.findIndex(card=>card.cardId === updateCard.cardId)
+//             : -1;
+//         this.selectedCard.selected = false;
+//         const cards = !updateCard
+//             ? [
+//                 ...this.state.cards.slice(0, movingCardIndex),
+//                 ...this.state.cards.slice(movingCardIndex + 1, this.state.cards.length),
+//                 this.selectedCard
+//             ]
+//             : movingCardIndex < destinationCardIndex
+//                 ? [
+//                     ...this.state.cards.slice(0, movingCardIndex),
+//                     ...this.state.cards.slice(movingCardIndex + 1, destinationCardIndex),
+//                     this.selectedCard,
+//                     ...this.state.cards.slice(destinationCardIndex, this.state.cards.length)
+//                 ]
+//                 : [
+//                     ...this.state.cards.slice(0, destinationCardIndex),
+//                     this.selectedCard,
+//                     ...this.state.cards.slice(destinationCardIndex, movingCardIndex),
+//                     ...this.state.cards.slice(movingCardIndex + 1, this.state.cards.length)
+//                 ];
+//         cards.filter(card=>card.pinValue)
+//             .forEach((card, cardIndex)=>card.pinValue = cardIndex + 1);
+//         this.setState({
+//             cards: this.selectedCard.pinValue ? this.sortHand(cards, this.state.sortState) : cards,
+//             moveState: null
+//         });
+//         this.selectedCard = null;
+//     }
+// }

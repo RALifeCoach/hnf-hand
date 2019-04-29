@@ -2,7 +2,6 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import './playing-card.less';
 
 import Hand from './../src/components/hand/hand';
 
