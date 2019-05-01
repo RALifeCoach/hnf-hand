@@ -2,6 +2,7 @@
   "presets": [["env", {"modules": false} ]],
   "plugins": [
     "transform-object-rest-spread",
+    "babel-plugin-styled-components",
     "transform-react-jsx"
   ]
 }

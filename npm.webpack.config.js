@@ -2,7 +2,7 @@ var path = require('path');
 module.exports = {
     devtool: 'source-map',
 
-    entry: './src/npm.index.js',
+    entry: './src/hand/hand.js',
 
     output: {
         path: path.resolve(__dirname, 'dist'),

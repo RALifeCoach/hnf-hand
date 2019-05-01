@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 
-import Hand from './../src/components/hand/hand';
+import Hand from './../src/hand/hand';
 
 const cards = [
     {suit: 'C', rank: 'A', cardId: '1', value: 13},

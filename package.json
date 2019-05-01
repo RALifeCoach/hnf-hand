@@ -1,52 +1,48 @@
 {
-  "name": "react-playing-card",
-  "version": "0.1.2",
-  "description": "A material design playing card for use in React.",
-  "main": "dist/index.js",
-  "scripts": {
-    "prepare": "webpack --config ./npm.webpack.config.js --progress --mode development",
-    "build": "webpack --config ./npm.webpack.config.js --progress --mode development",
-    "build-local": "webpack-dev-server --config ./webpack.config.js --progress --open --hot",
-    "start": "nodemon dist-local/index.js",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
-  },
-  "keywords": [
-    "react",
-    "playing-card"
-  ],
-  "author": {
-    "name": "Aryan Jabbari",
-    "email": "AryanJabbari@gmail.com",
-    "url": "http://aryanj-nyc.github.io"
-  },
-  "license": "ISC",
-  "peerDependencies": {
-    "react": "^16.2.0"
-  },
-  "dependencies": {
-    "lodash": "^4.17.11",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "styled-components": "^4.2.0"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@storybook/addon-actions": "^4.1.18",
-    "@storybook/addon-links": "^4.1.18",
-    "@storybook/addons": "^4.1.18",
-    "@storybook/cli": "^4.1.18",
-    "@storybook/react": "^4.0.0-alpha.24",
-    "babel-loader": "^8.0.4",
-    "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^2.0.0-alpha.20",
-    "css-loader": "^1.0.0",
-    "less": "^3.8.1",
-    "less-loader": "^4.1.0",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1"
-  }
+    "name": "hnf-hand",
+    "version": "0.1.2",
+    "description": "The hand component for hand and foot.",
+    "main": "dist/index.js",
+    "scripts": {
+        "prepare": "webpack --config ./npm.webpack.config.js --progress --mode development",
+        "build": "webpack --config ./npm.webpack.config.js --progress --mode development",
+        "start": "nodemon dist-local/index.js",
+        "storybook": "start-storybook -p 6006",
+        "build-storybook": "build-storybook"
+    },
+    "keywords": [
+        "react",
+        "playing-card"
+    ],
+    "author": {
+        "name": "Aryan Jabbari",
+        "email": "AryanJabbari@gmail.com",
+        "url": "http://aryanj-nyc.github.io"
+    },
+    "license": "ISC",
+    "peerDependencies": {
+        "react": "^16.8.0"
+    },
+    "dependencies": {
+        "hnf-playing-card": "^0.1.6",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "styled-components": "^4.2.0"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.4",
+        "@storybook/addon-actions": "^4.1.18",
+        "@storybook/addon-links": "^4.1.18",
+        "@storybook/addons": "^4.1.18",
+        "@storybook/cli": "^4.1.18",
+        "@storybook/react": "^4.0.0-alpha.24",
+        "babel-loader": "^8.0.4",
+        "babel-plugin-styled-components": "^1.10.0",
+        "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.3",
+        "babel-plugin-transform-react-jsx": "^6.24.1",
+        "babel-preset-env": "^2.0.0-alpha.20",
+        "webpack": "^4.30.0",
+        "webpack-cli": "^3.3.1"
+    }
 }
